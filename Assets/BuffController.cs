@@ -2,11 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TripleShotBuff : MonoBehaviour
+
+public enum BuffType { 
+
+    NONE ,
+    TRIPLE_SHOT,
+    ACCELERATE
+
+
+}
+
+
+
+
+
+public class BuffController : MonoBehaviour
 {
 
     public int Speed = 2;
-    public float duration = 5f;  
+    public float duration = 5f;
+    public float PlayerSpeedMultiplier = 1.0f;
+
+    public BuffType Type;
 
 
 
@@ -17,7 +34,24 @@ public class TripleShotBuff : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent<BeanController>(out BeanController player)) {
-            player.ActivateTripleShot(duration); 
+
+            switch (Type) {
+
+                case BuffType.TRIPLE_SHOT:
+                    player.ActivateTripleShot(duration);
+                    break;
+
+                case BuffType.ACCELERATE:
+                    player.ActivateAcceleration(duration , PlayerSpeedMultiplier);
+                    break;
+
+                default:
+                    Debug.LogWarning("SwitchReturnedNull");
+                    break;
+
+            
+            
+            }
             Destroy(this.gameObject);
         }
             

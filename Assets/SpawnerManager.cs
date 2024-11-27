@@ -6,7 +6,7 @@ public class SpawnerManager : MonoBehaviour
 {
 
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private GameObject tripleShotBuffPrefab;
+    [SerializeField] private List<BuffController> buffPrefabs = new List<BuffController>();
 
     [SerializeField] private Transform parent;
 
@@ -38,10 +38,14 @@ public class SpawnerManager : MonoBehaviour
     
     }
 
+
+    public BuffController GetRandomBuff() { return buffPrefabs[UnityEngine.Random.Range(0, buffPrefabs.Count)]; }
+
+
     // Bu fonksiyon her calistiginda buff spawn etme olasiligi yuzde 15dur
-    public void SpawnTripleShotBuff() { 
+    public void SpawnRandomBuff() { 
         if(UnityEngine.Random.value < 0.15f) 
-            Instantiate(tripleShotBuffPrefab , Vector3.right * UnityEngine.Random.Range(-7f, 7f) + Vector3.up * 7f , Quaternion.identity , parent); 
+            Instantiate(GetRandomBuff() , Vector3.right * UnityEngine.Random.Range(-7f, 7f) + Vector3.up * 7f , Quaternion.identity , parent); 
     }
 
 
@@ -65,7 +69,7 @@ public class SpawnerManager : MonoBehaviour
             // Dusmani spawnla
             SpawnEnemy();
             // Her bes saniyede bir yuzde 15 ihtimalle buff spawnla
-            SpawnTripleShotBuff();
+            SpawnRandomBuff();
         }
     
     

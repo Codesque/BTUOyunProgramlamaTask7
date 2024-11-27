@@ -19,6 +19,7 @@ public class BeanController : MonoBehaviour
     // Olusturdugumuz lazer prefabini Project tabinden Inspector tabindeki "Laser Prefab" yazisinin yanina surukleyin
     [SerializeField] private GameObject laserPrefab;
     [SerializeField] private int Speed = 10;
+    [SerializeField] private float SpeedMultiplier = 1f;
     [SerializeField] private float Cooldown = 2f;
 
     [Header("Threshold")]
@@ -30,7 +31,6 @@ public class BeanController : MonoBehaviour
     public Transform[] shootingPointArr;
     // Uclu atis bu "isTripleShotActive" flagi true oldugunda aktiflesecek
     public bool isTripleShotActive = false;
-
 
 
     float lastShotTime;
@@ -82,7 +82,7 @@ public class BeanController : MonoBehaviour
         Vector3 input = Vector3.right * Input.GetAxis("Horizontal") + Vector3.up * Input.GetAxis("Vertical");
 
         // Machine independent yapmak icin yer degistirmeyi (1/fps) ile carptim
-        pos += input * Speed * Time.deltaTime;
+        pos += input * Speed * SpeedMultiplier * Time.deltaTime;
 
         // Threshold X , Y esik degerlerini geciyorsa esik degerin 1 gerisine at. 
         pos.x = (pos.x >= thresholdX) ? 1 - thresholdX : (pos.x <= -thresholdX) ? thresholdX -1 : pos.x;
@@ -139,6 +139,18 @@ public class BeanController : MonoBehaviour
         if(tripleShotCoroutine != null) StopCoroutine(tripleShotCoroutine);
         tripleShotCoroutine = StartCoroutine(TripleShotBuffCoroutine(duration));
     
+    }
+
+
+    public IEnumerator AccelerationBuffCoroutine(float duration , float multiplier) { 
+        SpeedMultiplier *= multiplier;
+        yield return new WaitForSeconds(duration);
+        SpeedMultiplier /= multiplier;
+
+    
+    }
+    public void ActivateAcceleration(float duration , float multiplier) {
+        StartCoroutine(AccelerationBuffCoroutine(duration , multiplier));
     }
 
 
